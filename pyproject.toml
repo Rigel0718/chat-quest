@@ -7,4 +7,5 @@ requires-python = ">=3.10"
 dependencies = [
     "langgraph==1.0.0a2",
     "pydantic>=2.12.0a1",
+    "sqlalchemy>=2.0.44",
 ]
