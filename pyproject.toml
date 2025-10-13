@@ -5,6 +5,7 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "fastapi>=0.119.0",
     "langgraph==1.0.0a2",
     "pydantic>=2.12.0a1",
     "sqlalchemy>=2.0.44",
