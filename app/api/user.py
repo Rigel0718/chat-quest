@@ -33,7 +33,7 @@ def get_user(user_id: int, service: UserService = Depends(get_user_service)):
 def update_user(
     user_id: int, user: UserCreate, service: UserService = Depends(get_user_service)
 ):
-    updated = service.update_user(user_id, user.name)
+    updated = service.update_user(user_id, user.username, user.password)
     if not updated:
         raise HTTPException(status_code=404, detail="User not found")
     return updated
