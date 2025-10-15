@@ -11,5 +11,4 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(title=settings.APP_NAME)
 
 
-# Register routes
-app.include_router(router, prefix="/api")
+app.include_router(router)
