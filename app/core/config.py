@@ -15,18 +15,29 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     # OpenAI Setting
-    OPENAI_API_KEY: str
+    OPENAI_API_KEY: str = ''
 
     # DB Setting
-    DB_USER: str
-    DB_PASSWORD: str
-    DB_HOST: str
-    DB_PORT: int
-    DB_NAME: str
+    DB_USER: str = ''
+    DB_PASSWORD: str = ''
+    DB_HOST: str = ''
+    DB_PORT: int = 5432
+    DB_NAME: str = ''
+    DATABASE_URL: str | None = None
 
     @property
     def db_url(self) -> str:
-        return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        if self.DATABASE_URL:
+            return self.DATABASE_URL
+
+        if not (self.DB_USER and self.DB_HOST and self.DB_NAME):
+            return f"sqlite:///./{self.APP_NAME}.db"
+
+        password_segment = f":{self.DB_PASSWORD}" if self.DB_PASSWORD else ""
+        return (
+            f"postgresql+psycopg://{self.DB_USER}{password_segment}"
+            f"@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+        )
 
 
 settings = Settings()
