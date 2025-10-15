@@ -20,18 +20,18 @@ class UserService:
         user = self._db.query(User).filter(User.id == user_id).first()
         return self._to_read_model(user)
 
-    def create_user(self, username: str, password: str) -> UserRead:
-        user = User(username=username, password=password)
+    def create_user(self, name: str, password: str) -> UserRead:
+        user = User(name=name, password=password)
         self._db.add(user)
         self._db.commit()
         self._db.refresh(user)
         return self._to_read_model(user)
 
-    def update_user(self, user_id: int, username: str, password: str) -> UserRead | None:
+    def update_user(self, user_id: int, name: str, password: str) -> UserRead | None:
         user = self._db.query(User).filter(User.id == user_id).first()
         if not user:
             return None
-        user.username = username
+        user.name = name
         user.password = password
         self._db.commit()
         self._db.refresh(user)
