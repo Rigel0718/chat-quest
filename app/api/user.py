@@ -1,3 +1,5 @@
+from collections.abc import Iterator
+
 from fastapi import APIRouter, Depends, HTTPException
 
 from app.db.schema import SessionLocal
@@ -7,8 +9,12 @@ from app.services.user_service import UserService
 
 router = APIRouter()
 
-def get_user_service() -> UserService:
-    return UserService(session=SessionLocal())
+def get_user_service() -> Iterator[UserService]:
+    session = SessionLocal()
+    try:
+        yield UserService(session=session)
+    finally:
+        session.close()
 
 
 @router.get("/users", response_model=list[UserRead])
@@ -18,7 +24,7 @@ def get_users(service: UserService = Depends(get_user_service)):
 
 @router.post("/users", response_model=UserRead)
 def create_user(user: UserCreate, service: UserService = Depends(get_user_service)):
-    return service.create_user(user.username, user.password)
+    return service.create_user(user.name, user.password)
 
 
 @router.get("/users/{user_id}", response_model=UserRead)
@@ -33,7 +39,7 @@ def get_user(user_id: int, service: UserService = Depends(get_user_service)):
 def update_user(
     user_id: int, user: UserCreate, service: UserService = Depends(get_user_service)
 ):
-    updated = service.update_user(user_id, user.username, user.password)
+    updated = service.update_user(user_id, user.name, user.password)
     if not updated:
         raise HTTPException(status_code=404, detail="User not found")
     return updated
